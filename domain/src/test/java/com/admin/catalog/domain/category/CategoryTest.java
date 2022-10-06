@@ -1,7 +1,11 @@
 package com.admin.catalog.domain.category;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
  class CategoryTest {
 
 
@@ -13,13 +17,34 @@ import org.junit.jupiter.api.Test;
 
         final var actualCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
-        Assertions.assertNotNull(actualCategory);
-        Assertions.assertNotNull(actualCategory.getId());
-        Assertions.assertEquals(expectedName, actualCategory.getName());
-        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
-        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertNotNull(actualCategory.getCreatedAt());
-        Assertions.assertNotNull(actualCategory.getUpdatedAt());
-        Assertions.assertNull(actualCategory.getDeletedAt());
+        assertNotNull(actualCategory);
+        assertNotNull(actualCategory.getId());
+        assertEquals(expectedDescription, actualCategory.getDescription());
+        assertEquals(expectedName, actualCategory.getName());
+        assertEquals(expectedIsActive, actualCategory.isActive());
+        assertNotNull(actualCategory.getCreatedAt());
+        assertNotNull(actualCategory.getUpdatedAt());
+        assertNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+     void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldReceiveError(){
+        final String expectedName = null;
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should not be null!";
+
+        final var actualCategory
+                = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        final var actualException = assertThrows(DomainException.class,
+                () -> actualCategory.validate(new ThrowsValidationHandler()));
+
+        assertEquals(expectedErrorCount, actualException.getErrors().size());
+        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+
+
     }
 }
