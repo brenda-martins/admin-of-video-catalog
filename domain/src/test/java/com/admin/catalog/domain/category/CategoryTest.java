@@ -1,5 +1,7 @@
 package com.admin.catalog.domain.category;
 
+import com.admin.catalog.domain.exceptions.DomainException;
+import com.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
