@@ -26,7 +26,7 @@ public class CreateCategoryUseCaseTest  {
         when(categoryGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var useCase = new CreateCategoryUseCase(categoryGateway);
+        final var useCase = new DefaultCreateCategoryUseCase(categoryGateway);
 
         final var actualOutput = useCase.execute(aCommand);
 
