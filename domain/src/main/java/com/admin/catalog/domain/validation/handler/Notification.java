@@ -5,7 +5,6 @@ import com.admin.catalog.domain.validation.Error;
 import com.admin.catalog.domain.validation.ValidationHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Notification implements ValidationHandler {
@@ -18,6 +17,10 @@ public class Notification implements ValidationHandler {
 
     public static Notification create(){
         return new Notification(new ArrayList<>());
+    }
+
+    public static Notification create(final Throwable throwable){
+        return create(new Error(throwable.getMessage()));
     }
 
     public static Notification create(final Error anError){
