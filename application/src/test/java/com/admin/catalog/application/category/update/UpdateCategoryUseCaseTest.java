@@ -44,7 +44,7 @@ class UpdateCategoryUseCaseTest {
         );
 
         when(categoryGateway.findById(eq(expectedId)))
-                .thenReturn(Optional.of(aCategory));
+                .thenReturn(Optional.of(Category.with(aCategory)));
 
         when(categoryGateway.update(any()))
                 .thenAnswer(returnsFirstArg());
