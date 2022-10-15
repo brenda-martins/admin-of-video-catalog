@@ -1,6 +1,7 @@
 package com.admin.catalog.application.category.create;
 
 import com.admin.catalog.domain.category.CategoryGateway;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,12 @@ class CreateCategoryUseCaseTest  {
 
     @Mock
     private CategoryGateway categoryGateway;
+
+    @BeforeEach
+    void cleanUp(){
+        Mockito.reset(categoryGateway);
+    }
+
     @Test
     void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId(){
         final var expectedName = "Filmes";
