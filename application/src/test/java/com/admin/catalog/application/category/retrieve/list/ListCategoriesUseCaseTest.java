@@ -1,5 +1,7 @@
 package com.admin.catalog.application.category.retrieve.list;
 
+import com.admin.catalog.application.category.retrive.list.CategoryListOutput;
+import com.admin.catalog.application.category.retrive.list.DefaultListCategoriesUseCase;
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryGateway;
 import com.admin.catalog.domain.category.CategorySearchQuery;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class ListCategoriesUseCaseTest {
 
     @InjectMocks
-    private DefaultListCategoriesUseCaseTest useCase;
+    private DefaultListCategoriesUseCase useCase;
 
     @Mock
     private CategoryGateway categoryGateway;
