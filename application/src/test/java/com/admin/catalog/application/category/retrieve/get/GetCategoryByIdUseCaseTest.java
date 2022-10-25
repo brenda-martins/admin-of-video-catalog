@@ -1,6 +1,7 @@
 package com.admin.catalog.application.category.retrieve.get;
 
 
+import com.admin.catalog.application.category.retrive.get.DefaultGetCategoryByIdUseCase;
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryGateway;
 import com.admin.catalog.domain.category.CategoryID;
