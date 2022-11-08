@@ -20,21 +20,21 @@ public class Main {
         SpringApplication.run(WebServerConfig.class, args);
     }
 
-    @Bean
-    public ApplicationRunner runner(CategoryRepository repository){
-        return args -> {
-            List<CategoryJpaEntity> list = repository.findAll();
-
-            Category movies = Category.newCategory("Movies", "The best category", true);
-            repository.saveAndFlush(CategoryJpaEntity.from(movies));
-
-            List<CategoryJpaEntity> list2 = repository.findAll();
-
-            for(CategoryJpaEntity c : list2){
-                System.out.println(c);
-            }
-
-            repository.deleteAll();
-        };
-    }
+//    @Bean
+//    public ApplicationRunner runner(CategoryRepository repository){
+//        return args -> {
+//            List<CategoryJpaEntity> list = repository.findAll();
+//
+//            Category movies = Category.newCategory("Movies", "The best category", true);
+//            repository.saveAndFlush(CategoryJpaEntity.from(movies));
+//
+//            List<CategoryJpaEntity> list2 = repository.findAll();
+//
+//            for(CategoryJpaEntity c : list2){
+//                System.out.println(c);
+//            }
+//
+//            repository.deleteAll();
+//        };
+//    }
 }
