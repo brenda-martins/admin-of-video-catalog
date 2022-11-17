@@ -143,8 +143,15 @@ class CategoryMySQLGatewayTest {
         assertEquals(expectedDescription, actualCategory.getDescription());
         assertEquals(expectedIsActive, actualCategory.isActive());
         assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
-        assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
+        assertEquals(aCategory.getUpdatedAt(), actualCategory.getUpdatedAt());
         assertEquals(aCategory.getDeletedAt(), actualCategory.getDeletedAt());
         assertNull(aCategory.getDeletedAt());
+    }
+
+    @Test
+    void givenAValidCategoryIdNotStored_whenCallsFindById_thenShouldReturnEmpty() {
+        assertEquals(0, categoryRepository.count());
+        final var actualCategory = categoryGateway.findById(CategoryID.from("empty"));
+        assertTrue(actualCategory.isEmpty());
     }
 }
