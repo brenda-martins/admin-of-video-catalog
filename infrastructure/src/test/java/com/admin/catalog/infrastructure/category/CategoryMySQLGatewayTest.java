@@ -3,10 +3,14 @@ package com.admin.catalog.infrastructure.category;
 
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryID;
+import com.admin.catalog.domain.category.CategorySearchQuery;
 import com.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -147,11 +151,60 @@ class CategoryMySQLGatewayTest {
         assertEquals(aCategory.getDeletedAt(), actualCategory.getDeletedAt());
         assertNull(aCategory.getDeletedAt());
     }
-
     @Test
     void givenAValidCategoryIdNotStored_whenCallsFindById_thenShouldReturnEmpty() {
         assertEquals(0, categoryRepository.count());
         final var actualCategory = categoryGateway.findById(CategoryID.from("empty"));
         assertTrue(actualCategory.isEmpty());
+    }
+
+    @Test
+    void givenPrePersistedCategories_whenCallsFindAll_thenShouldReturnPaginated(){
+        final var expectedCurrentPage = 0;
+        final var expectedPerPage = 1;
+        final var expectedTotal = 3;
+        final var expectedItemsCount = 1;
+
+        final  var filmes = Category.newCategory("Filmes", null, true);
+        final  var series = Category.newCategory("Séries", null, true);
+        final  var documentarios = Category.newCategory("Documentário", null, true);
+
+        assertEquals(0, categoryRepository.count());
+
+        categoryRepository.saveAll(List.of(
+                CategoryJpaEntity.from(filmes),
+                CategoryJpaEntity.from(series),
+                CategoryJpaEntity.from(documentarios)
+        ));
+
+        assertEquals(expectedTotal, categoryRepository.count());
+
+        final var query = new CategorySearchQuery(0, 1, "", "name", "asc");
+        final var actualResult = categoryGateway.findAll(query);
+
+        assertEquals(expectedCurrentPage, actualResult.currentPage());
+        assertEquals(expectedPerPage, actualResult.perPage());
+        assertEquals(expectedTotal, actualResult.total());
+        assertEquals(expectedItemsCount, actualResult.items().size());
+        assertEquals(documentarios.getId(), actualResult.items().get(0).getId());
+        assertEquals(filmes.getId(), actualResult.items().get(1).getId());
+        assertEquals(series.getId(), actualResult.items().get(2).getId());
+    }
+
+    @Test
+    void givenEmptyCategoriesTable_whenCallsFindAll_shouldReturnEmptyPage() {
+        final var expectedPage = 0;
+        final var expectedPerPage = 1;
+        final var expectedTotal = 0;
+
+        assertEquals(0, categoryRepository.count());
+
+        final var query = new CategorySearchQuery(0, 1, "", "name", "asc");
+        final var actualResult = categoryGateway.findAll(query);
+
+        assertEquals(expectedPage, actualResult.currentPage());
+        assertEquals(expectedPerPage, actualResult.perPage());
+        assertEquals(expectedTotal, actualResult.total());
+        assertEquals(0, actualResult.items().size());
     }
 }
