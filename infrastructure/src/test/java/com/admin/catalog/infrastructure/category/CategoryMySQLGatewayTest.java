@@ -2,6 +2,7 @@ package com.admin.catalog.infrastructure.category;
 
 
 import com.admin.catalog.domain.category.Category;
+import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -94,5 +95,30 @@ class CategoryMySQLGatewayTest {
         assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
         assertEquals(aCategory.getDeletedAt(), actualEntity.getDeletedAt());
         assertNull(aCategory.getDeletedAt());
+    }
+
+    @Test
+    void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_thenShouldDeleteTheCategory(){
+        final var aCategory = Category.newCategory("Filmes", "A melhor categoria", true);
+
+        assertEquals(0, categoryRepository.count());
+
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+
+        assertEquals(1, categoryRepository.count());
+
+        categoryGateway.deleteById(aCategory.getId());
+
+        assertEquals(0, categoryRepository.count());
+    }
+
+    @Test
+    void givenAnInvalidCategoryId_whenTryToDeleteIt_thenShouldDeleteTheCategory(){
+
+        assertEquals(0, categoryRepository.count());
+
+        categoryGateway.deleteById(CategoryID.from("invalid"));
+
+        assertEquals(0, categoryRepository.count());
     }
 }
