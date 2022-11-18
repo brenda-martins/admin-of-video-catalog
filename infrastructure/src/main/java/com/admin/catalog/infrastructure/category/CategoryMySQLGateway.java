@@ -19,6 +19,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
 
+import static com.admin.catalog.infrastructure.utils.SpecificationsUtils.like;
+
 @Service
 public class CategoryMySQLGateway implements CategoryGateway {
 
@@ -62,10 +64,12 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
         final var specifications = Optional.ofNullable(aQuery.terms())
                 .filter(str -> !str.isBlank())
-                .map(str ->
-                   SpecificationsUtils.<CategoryJpaEntity>like("name", str)
-                           .or(SpecificationsUtils.like("description", str))
-                )
+                .map(str ->{
+                    final  Specification<CategoryJpaEntity> nameLike = like("name", str);
+                    final  Specification<CategoryJpaEntity> descriptionLike = like("description", str);
+
+                    return nameLike.or(descriptionLike);
+                })
                 .orElse(null);
 
         final var pageResult =
