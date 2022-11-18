@@ -1,7 +1,7 @@
 package com.admin.catalog.infrastructure.category.persistence;
 
 import com.admin.catalog.domain.category.Category;
-import com.admin.catalog.infrastructure.category.MySQLGatewayTest;
+import com.admin.catalog.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
