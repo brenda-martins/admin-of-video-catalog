@@ -1,16 +1,18 @@
 package com.admin.catalog.infrastructure;
 
-import com.admin.catalog.domain.category.Category;
-import com.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
-import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
+import com.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.admin.catalog.application.category.delete.DeleteCategoryUseCase;
+import com.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
+import com.admin.catalog.application.category.retrive.list.ListCategoriesUseCase;
+import com.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.admin.catalog.infrastructure.configuration.WebServerConfig;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.AbstractEnvironment;
 
-import java.util.List;
 
 @SpringBootApplication
 public class Main {
@@ -18,6 +20,20 @@ public class Main {
         System.out.println("Hello world!");
         System.setProperty(AbstractEnvironment.DEFAULT_PROFILES_PROPERTY_NAME, "dev");
         SpringApplication.run(WebServerConfig.class, args);
+    }
+
+    @Bean
+    @DependsOnDatabaseInitialization
+    ApplicationRunner runner(
+            CreateCategoryUseCase createCategoryUseCase,
+            UpdateCategoryUseCase updateCategoryUseCase,
+            GetCategoryByIdUseCase getCategoryByIdUseCase,
+            ListCategoriesUseCase listCategoriesUseCase,
+            DeleteCategoryUseCase deleteCategoryUseCase
+    ){
+        return args -> {
+
+        };
     }
 
 //    @Bean
