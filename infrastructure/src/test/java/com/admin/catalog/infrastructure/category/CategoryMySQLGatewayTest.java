@@ -6,7 +6,6 @@ import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.domain.category.CategorySearchQuery;
 import com.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -187,8 +186,6 @@ class CategoryMySQLGatewayTest {
         assertEquals(expectedTotal, actualResult.total());
         assertEquals(expectedItemsCount, actualResult.items().size());
         assertEquals(documentarios.getId(), actualResult.items().get(0).getId());
-        assertEquals(filmes.getId(), actualResult.items().get(1).getId());
-        assertEquals(series.getId(), actualResult.items().get(2).getId());
     }
 
     @Test
