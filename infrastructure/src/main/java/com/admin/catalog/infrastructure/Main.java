@@ -22,19 +22,19 @@ public class Main {
         SpringApplication.run(WebServerConfig.class, args);
     }
 
-    @Bean
-    @DependsOnDatabaseInitialization
-    ApplicationRunner runner(
-            CreateCategoryUseCase createCategoryUseCase,
-            UpdateCategoryUseCase updateCategoryUseCase,
-            GetCategoryByIdUseCase getCategoryByIdUseCase,
-            ListCategoriesUseCase listCategoriesUseCase,
-            DeleteCategoryUseCase deleteCategoryUseCase
-    ){
-        return args -> {
-
-        };
-    }
+//    @Bean
+//    @DependsOnDatabaseInitialization
+//    ApplicationRunner runner(
+//            CreateCategoryUseCase createCategoryUseCase,
+//            UpdateCategoryUseCase updateCategoryUseCase,
+//            GetCategoryByIdUseCase getCategoryByIdUseCase,
+//            ListCategoriesUseCase listCategoriesUseCase,
+//            DeleteCategoryUseCase deleteCategoryUseCase
+//    ){
+//        return args -> {
+//
+//        };
+//    }
 
 //    @Bean
 //    public ApplicationRunner runner(CategoryRepository repository){
