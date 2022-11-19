@@ -1,4 +1,4 @@
-package com.admin.catalog.application;
+package com.admin.catalog.application.category;
 
 import com.admin.catalog.IntegrationTest;
 import com.admin.catalog.application.category.create.CreateCategoryUseCase;

@@ -7,16 +7,10 @@ import com.admin.catalog.domain.category.CategorySearchQuery;
 import com.admin.catalog.domain.pagination.Pagination;
 import com.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
-import com.admin.catalog.infrastructure.utils.SpecificationsUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.Optional;
 
 import static com.admin.catalog.infrastructure.utils.SpecificationsUtils.like;
