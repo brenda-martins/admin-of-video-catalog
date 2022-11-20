@@ -27,13 +27,13 @@ public class CategoryJpaEntity {
     @Column(name =  "active", nullable = false)
     private boolean active;
 
-    @Column(name =  "created_at", nullable = false, columnDefinition = "DATETIME(6")
+    @Column(name =  "created_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant createdAt;
 
-    @Column(name =  "updated_at", nullable = false, columnDefinition = "DATETIME(6")
+    @Column(name =  "updated_at", nullable = false, columnDefinition = "DATETIME(6)")
     private Instant updatedAt;
 
-    @Column(name =  "deleted_at", columnDefinition = "DATETIME(6")
+    @Column(name =  "deleted_at", columnDefinition = "DATETIME(6)")
     private Instant deletedAt;
 
     public CategoryJpaEntity() {
