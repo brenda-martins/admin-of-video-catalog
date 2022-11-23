@@ -8,6 +8,8 @@ import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static io.vavr.API.Right;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -48,7 +50,7 @@ class CategoryAPITest {
                 new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any()))
-                .thenReturn(Right(CreateCategoryOutput.from(CategoryID.from("123"))));
+                .thenReturn(Right(CreateCategoryOutput.from("123")));
 
         final var request = MockMvcRequestBuilders.post("/categories")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +60,9 @@ class CategoryAPITest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(
                         MockMvcResultMatchers.status().isCreated(),
-                        MockMvcResultMatchers.header().string("Location", "/categories/123")
+                        MockMvcResultMatchers.header().string("Location", "/categories/123"),
+                        MockMvcResultMatchers.header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE),
+                        MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo("123"))
                 );
 
         Mockito.verify(createCategoryUseCase, Mockito.times(1)).execute(Mockito.argThat(cmd ->
