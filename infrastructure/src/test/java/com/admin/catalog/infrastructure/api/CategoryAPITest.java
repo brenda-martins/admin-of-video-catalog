@@ -195,7 +195,14 @@ class CategoryAPITest {
         final var expectedErrorMessage = "Category with ID 123 was not found";
         final var expectedId = CategoryID.from("123").getValue();
 
-        final var request = get("/categories/{id}", expectedId);
+        when(getCategoryByIdUseCase.execute(any()))
+                .thenThrow(DomainException.with(
+                        new Error("Category with ID %s was not found".formatted(expectedId))
+                ));
+
+        final var request = get("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
 
         final var response = this.mockMvc.perform(request)
                 .andDo(print());
