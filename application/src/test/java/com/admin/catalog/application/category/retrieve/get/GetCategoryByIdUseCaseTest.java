@@ -5,7 +5,7 @@ import com.admin.catalog.application.category.retrive.get.DefaultGetCategoryById
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryGateway;
 import com.admin.catalog.domain.category.CategoryID;
-import com.admin.catalog.domain.exceptions.DomainException;
+import com.admin.catalog.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +71,7 @@ import static org.mockito.Mockito.when;
                 .thenReturn(Optional.empty());
 
         final var actualException = assertThrows(
-                DomainException.class,
+                NotFoundException.class,
                 () -> useCase.execute(expectedId.getValue())
         );
 

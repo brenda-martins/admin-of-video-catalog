@@ -8,6 +8,7 @@ import com.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.domain.exceptions.DomainException;
+import com.admin.catalog.domain.exceptions.NotFoundException;
 import com.admin.catalog.domain.validation.Error;
 import com.admin.catalog.domain.validation.handler.Notification;
 import com.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
@@ -193,14 +194,12 @@ class CategoryAPITest {
     @Test
     void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() throws Exception {
         final var expectedErrorMessage = "Category with ID 123 was not found";
-        final var expectedId = CategoryID.from("123").getValue();
+        final var expectedId = CategoryID.from("123");
 
         when(getCategoryByIdUseCase.execute(any()))
-                .thenThrow(DomainException.with(
-                        new Error("Category with ID %s was not found".formatted(expectedId))
-                ));
+                .thenThrow(NotFoundException.with(Category.class, expectedId));
 
-        final var request = get("/categories/{id}", expectedId)
+        final var request = get("/categories/{id}", expectedId.getValue())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
