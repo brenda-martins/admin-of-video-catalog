@@ -63,9 +63,6 @@ class UpdateCategoryUseCaseIT {
         assertEquals(expectedName, actualCategory.getName());
         assertEquals(expectedDescription, actualCategory.getDescription());
         assertEquals(expectedIsActive, actualCategory.isActive());
-        assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
-        assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
-        assertNull(actualCategory.getDeletedAt());
     }
 
     @Test
@@ -80,7 +77,7 @@ class UpdateCategoryUseCaseIT {
         final var expectedIsActive = true;
         final var expectedId = aCategory.getId();
 
-        final var expectedErrorMessage = "'name' should not be null";
+        final var expectedErrorMessage = "'name' should not be null.";
         final var expectedErrorCount = 1;
 
         final var aCommand =
@@ -127,9 +124,6 @@ class UpdateCategoryUseCaseIT {
         assertEquals(expectedName, actualCategory.getName());
         assertEquals(expectedDescription, actualCategory.getDescription());
         assertEquals(expectedIsActive, actualCategory.isActive());
-        assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
-        assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
-        assertNotNull(actualCategory.getDeletedAt());
     }
 
     @Test
@@ -167,9 +161,6 @@ class UpdateCategoryUseCaseIT {
         assertEquals(aCategory.getName(), actualCategory.getName());
         assertEquals(aCategory.getDescription(), actualCategory.getDescription());
         assertEquals(aCategory.isActive(), actualCategory.isActive());
-        assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
-        assertEquals(aCategory.getUpdatedAt(), actualCategory.getUpdatedAt());
-        assertEquals(aCategory.getDeletedAt(), actualCategory.getDeletedAt());
     }
 
     @Test

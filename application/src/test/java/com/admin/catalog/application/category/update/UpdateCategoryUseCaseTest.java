@@ -5,6 +5,7 @@ import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryGateway;
 import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.domain.exceptions.DomainException;
+import com.admin.catalog.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -192,8 +193,7 @@ class UpdateCategoryUseCaseTest {
         final var expectedDescription = "A categoria mais assistida.";
         final var expectedIsActive = false;
         final var expectedId = "123";
-        final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "Category with ID 123 was not found!";
+        final var expectedErrorMessage = "Category with ID 123 was not found";
 
         final var aCommand = UpdateCategoryCommand.with(
                 expectedId,
@@ -206,10 +206,9 @@ class UpdateCategoryUseCaseTest {
                 .thenReturn(Optional.empty());
 
         final var actualException =
-                assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+                assertThrows(NotFoundException.class, () -> useCase.execute(aCommand));
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        assertEquals(expectedErrorMessage, actualException.getMessage());
 
         verify(categoryGateway, times(1)).findById(eq(CategoryID.from(expectedId)));
         verify(categoryGateway, times(0)).update(any());
