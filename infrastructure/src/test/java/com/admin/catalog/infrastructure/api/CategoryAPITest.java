@@ -5,6 +5,8 @@ import com.admin.catalog.application.category.create.CreateCategoryOutput;
 import com.admin.catalog.application.category.create.CreateCategoryUseCase;
 import com.admin.catalog.application.category.retrive.get.CategoryOutput;
 import com.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
+import com.admin.catalog.application.category.update.UpdateCategoryOutput;
+import com.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.admin.catalog.domain.category.Category;
 import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.domain.exceptions.DomainException;
@@ -12,6 +14,7 @@ import com.admin.catalog.domain.exceptions.NotFoundException;
 import com.admin.catalog.domain.validation.Error;
 import com.admin.catalog.domain.validation.handler.Notification;
 import com.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import com.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static io.vavr.API.Left;
@@ -36,8 +39,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,6 +55,9 @@ class CategoryAPITest {
 
     @MockBean
     private GetCategoryByIdUseCase getCategoryByIdUseCase;
+
+    @MockBean
+    private UpdateCategoryUseCase updateCategoryUseCase;
 
     @Autowired
     private ObjectMapper mapper;
@@ -208,6 +213,37 @@ class CategoryAPITest {
 
         response.andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() throws Exception {
+        final var expectedId = "123";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
+
+        final var aCommand =
+                new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+
+        final var request = put("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(aCommand));
+
+        final var response = this.mockMvc.perform(request)
+                .andDo(print());
+
+        response.andExpect(status().isNoContent())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE));
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                        && Objects.equals(expectedDescription, cmd.description())
+                        && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
     }
 
 }
