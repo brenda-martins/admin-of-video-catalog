@@ -46,6 +46,9 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-undertow')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+    implementation('com.fasterxml.jackson.module:jackson-module-afterburner')
+
     testImplementation('org.flywaydb:flyway-core')
 
     testRuntimeOnly('com.h2database:h2')
