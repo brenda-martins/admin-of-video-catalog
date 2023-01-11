@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.annotation.*;
 
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @ComponentScan(includeFilters = {
         @ComponentScan.Filter(
                 type = FilterType.REGEX,
