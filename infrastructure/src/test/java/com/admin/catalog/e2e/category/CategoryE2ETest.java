@@ -20,8 +20,12 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
 @E2ETest
@@ -64,7 +68,28 @@ public class CategoryE2ETest {
         final var expectedIsActive = true;
 
         final var actualId =  givenACategory(expectedName, expectedDescription, expectedIsActive);
-        final var actualCategory = retriveACategory(actualId.getValue());
+        final var actualCategory = categoryRepository.findById(actualId.getValue()).get();
+
+        assertEquals(expectedName, actualCategory.getName());
+        assertEquals(expectedDescription, actualCategory.getDescription());
+        assertEquals(expectedIsActive, actualCategory.isActive());
+        assertNotNull(actualCategory.getCreatedAt());
+        assertNotNull(actualCategory.getUpdatedAt());
+        assertNull(actualCategory.getDeletedAt());
+
+    }
+
+    @Test
+    void shouldBeAbleToRetrieveACategoryByItsIdentifier() throws Exception {
+        assertEquals(0, categoryRepository.count());
+
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var actualId = givenACategory(expectedName, expectedDescription, expectedIsActive);
+
+        final var actualCategory = retrieveACategory(actualId.getValue());
 
         assertEquals(expectedName, actualCategory.name());
         assertEquals(expectedDescription, actualCategory.description());
@@ -72,7 +97,19 @@ public class CategoryE2ETest {
         assertNotNull(actualCategory.createdAt());
         assertNotNull(actualCategory.updatedAt());
         assertNull(actualCategory.deletedAt());
+    }
 
+    @Test
+    void shouldBeAbleToSeeATreatedErrorByGettingANotFoundCategory() throws Exception {
+        assertEquals(0, categoryRepository.count());
+
+        final var aRequest = get("/categories/not-found")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mockMvc.perform(aRequest)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo("Category with ID not-found was not found")));
     }
 
     private CategoryID givenACategory(final String aName,
@@ -94,7 +131,7 @@ public class CategoryE2ETest {
         return CategoryID.from(actualId);
     }
 
-    private CategoryResponse retriveACategory(final String anId) throws Exception{
+    private CategoryResponse retrieveACategory(final String anId) throws Exception{
         final var aRequest = MockMvcRequestBuilders.get("/categories/" + anId)
                 .contentType(MediaType.APPLICATION_JSON);
 
