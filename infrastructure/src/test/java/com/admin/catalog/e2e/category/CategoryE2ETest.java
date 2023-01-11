@@ -7,8 +7,6 @@ import com.admin.catalog.infrastructure.category.models.CreateCategoryRequest;
 import com.admin.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import com.admin.catalog.infrastructure.configuration.json.Json;
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,8 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -141,6 +138,18 @@ public class CategoryE2ETest {
         assertNotNull(actualCategory.getCreatedAt());
         assertNotNull(actualCategory.getUpdatedAt());
         assertNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    void asACatalogAdminIShouldBeAbleToDeleteACategoryByItsIdentifier() throws Exception {
+        assertEquals(0, categoryRepository.count());
+
+        final var actualId = givenACategory("Filmes", null, true);
+
+        this.mockMvc.perform(delete("/categories/" + actualId.getValue()))
+                        .andExpect(status().isNoContent());
+
+        assertFalse(this.categoryRepository.existsById(actualId.getValue()));
     }
 
     private CategoryID givenACategory(final String aName,
