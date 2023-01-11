@@ -4,6 +4,7 @@ import com.admin.catalog.E2ETest;
 import com.admin.catalog.domain.category.CategoryID;
 import com.admin.catalog.infrastructure.category.models.CategoryResponse;
 import com.admin.catalog.infrastructure.category.models.CreateCategoryRequest;
+import com.admin.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import com.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import com.admin.catalog.infrastructure.configuration.json.Json;
 import org.junit.Assert;
@@ -24,6 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -110,6 +112,35 @@ public class CategoryE2ETest {
         this.mockMvc.perform(aRequest)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo("Category with ID not-found was not found")));
+    }
+
+    @Test
+    void shouldBeAbleToUpdateACategoryByItsIdentifier() throws Exception {
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        assertEquals(0, categoryRepository.count());
+
+        final var actualId = givenACategory("Movies", null, true);
+
+        final var aRequestBody = new UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive);
+
+        final var aRequest = put("/categories/" + actualId.getValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Json.writeValueAsString(aRequestBody));
+
+        this.mockMvc.perform(aRequest)
+                .andExpect(status().isOk());
+
+        final var actualCategory = categoryRepository.findById(actualId.getValue()).get();
+
+        assertEquals(expectedName, actualCategory.getName());
+        assertEquals(expectedDescription, actualCategory.getDescription());
+        assertEquals(expectedIsActive, actualCategory.isActive());
+        assertNotNull(actualCategory.getCreatedAt());
+        assertNotNull(actualCategory.getUpdatedAt());
+        assertNull(actualCategory.getDeletedAt());
     }
 
     private CategoryID givenACategory(final String aName,
